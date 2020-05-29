@@ -11,7 +11,8 @@ class App extends Component {
         { id: 2, name: "Hacer la cama", done: true },
         { id: 3, name: "Leer un rato", done: false }
       ],
-      newTask: ''
+      newTask: '',
+      idtask: 4
     }
   }
   render() {
@@ -20,14 +21,42 @@ class App extends Component {
         <div className="list">
           <h3>Por hacer:</h3>
           <ul className="todo">
-            {this.state.tasks.map((task, index) => <li key={task.id}>{task.name}</li>)}
+            {this.state.tasks.map((task, index) => <li className={task.done ? 'done' : ''} key={task.id} onClick={this.checkTask.bind(this, index)}>{task.name}</li>)}
           </ul>
-          <form>
-            <input type="text" id="new-task" placeholder="Ingresa una tarea y oprime Enter" value={this.state.newTask} />
+          <form onSubmit={this.addTask.bind(this)}>
+           <input className="error" type="text" id="new-task" placeholder="Ingresa una tarea y oprime Enter" value={this.state.newTask} onChange={this.updateTask.bind(this)}/>
           </form>
         </div>
       </div>
     )
+  }
+  
+  updateTask(event) {
+    this.setState({
+      newTask: event.target.value
+    })
+  }
+  
+  addTask(event){
+    event.preventDefault();
+    if(this.state.newTask !== ''){
+      this.setState({
+        tasks: this.state.tasks .concat({id: this.state.idtask++, name: this.state.newTask, done: false}),
+        newTask: ''
+      })
+    }
+  }
+
+  checkTask(index){
+    this.setState({
+      tasks: [
+        {
+          id: this.state.tasks[index].id,
+          name: this.state.tasks[index].name,
+          done: !this.state.tasks[index].done
+        }
+      ]
+    })
   }
 }
 
